@@ -5,6 +5,10 @@ property at `t`, nothing accumulates between frames, every frame renders indepen
 
 Pydantic models *are* the schema. JSON is the product contract; the Python API is sugar over the same models.
 
+![Merging two sorted lists, one comparison per beat](https://raw.githubusercontent.com/fletchgraham/buttery/main/examples/merge_sorted.gif)
+
+*`examples/merge_sorted.py`: the merge is simulated in Python, then each step becomes keyframes.*
+
 ```
 Agent tool surface   validate / state / preview / render     (tools.py, cli.py, mcp_server.py)
 Authoring            Python sugar  <->  JSON                 (objects.py, expr.py, parse.py)
