@@ -1,0 +1,14 @@
+{
+  "name": "buttery-mcp",
+  "version": "0.1.0",
+  "description": "MCP server launcher for buttery: agent-friendly 2D explainer animations where the scene is a pure function of time.",
+  "keywords": ["mcp", "model-context-protocol", "animation", "explainer", "buttery", "agent"],
+  "homepage": "https://github.com/fletchgraham/buttery",
+  "repository": { "type": "git", "url": "git+https://github.com/fletchgraham/buttery.git", "directory": "npm" },
+  "bugs": { "url": "https://github.com/fletchgraham/buttery/issues" },
+  "license": "MIT",
+  "author": "Fletcher Graham",
+  "bin": { "buttery-mcp": "bin/buttery-mcp.js" },
+  "files": ["bin", "README.md", "LICENSE"],
+  "engines": { "node": ">=18" }
+}

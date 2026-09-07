@@ -88,6 +88,8 @@ Never a bare stack trace.
 
 Claude Code skill: `skill/` (symlink or copy it into `~/.claude/skills/buttery`). Register the MCP server with
 `claude mcp add buttery -- uv run --directory /path/to/this/repo buttery mcp`.
+Or from the published packages, no checkout needed: `claude mcp add buttery -- npx -y buttery-mcp`
+(the [`buttery-mcp`](https://www.npmjs.com/package/buttery-mcp) npm shim runs `uvx buttery mcp`; see `npm/`).
 
 ## Validation and evaluation rules
 
