@@ -8,3 +8,5 @@ out/
 *.mp4
 *.mov
 .pytest_cache/
+.env
+.env.*

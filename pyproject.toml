@@ -3,13 +3,32 @@ name = "buttery"
 version = "0.1.0"
 description = "Agent-friendly 2D explainer animations. The scene is a pure function of time."
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Fletcher Graham" }]
 requires-python = ">=3.11"
+keywords = ["animation", "explainer", "motion-graphics", "2d", "skia", "agent", "mcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Multimedia :: Video",
+]
 dependencies = [
     "pydantic>=2.10",
     "skia-python>=138",
     "numpy>=1.26",
     "mcp>=2.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/fletchgraham/buttery"
+Repository = "https://github.com/fletchgraham/buttery"
+Issues = "https://github.com/fletchgraham/buttery/issues"
 
 [project.scripts]
 buttery = "buttery.cli:main"

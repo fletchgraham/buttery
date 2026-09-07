@@ -15,8 +15,16 @@ Renderer             skia-python, motion blur via sub-frames  (render.py)
 ## Install
 
 ```bash
-uv sync                # Python 3.11+, pydantic, skia-python, numpy, mcp
+pip install buttery    # or: uv add buttery
 brew install ffmpeg    # for .mp4 output (PNG sequences work without it)
+```
+
+The renderer is skia-python, which ships large platform wheels; expect a heavier install than the code size suggests.
+
+From a clone:
+
+```bash
+uv sync                # Python 3.11+, pydantic, skia-python, numpy, mcp
 uv run pytest
 ```
 
