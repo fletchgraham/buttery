@@ -1,0 +1,114 @@
+{
+  "size": [
+    1920,
+    1080
+  ],
+  "fps": 60,
+  "duration": 3.0,
+  "background": "#111111",
+  "view_width": 8.0,
+  "objects": [
+    {
+      "id": "dot",
+      "opacity": 1.0,
+      "type": "circle",
+      "x": {
+        "op": "tween",
+        "keys": [
+          [
+            0.0,
+            -3.0
+          ],
+          [
+            1.5,
+            3.0
+          ]
+        ],
+        "ease": "out_cubic"
+      },
+      "y": {
+        "op": "mul",
+        "args": [
+          0.2,
+          {
+            "op": "sin",
+            "args": [
+              {
+                "op": "mul",
+                "args": [
+                  6.0,
+                  "t"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "r": 0.3,
+      "fill": "coral",
+      "stroke": null,
+      "stroke_width": 0.05
+    },
+    {
+      "id": "ring",
+      "opacity": {
+        "op": "tween",
+        "keys": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.5,
+            1.0
+          ],
+          [
+            2.5,
+            1.0
+          ],
+          [
+            3.0,
+            0.0
+          ]
+        ],
+        "ease": "linear"
+      },
+      "type": "circle",
+      "x": "dot.x",
+      "y": 0.0,
+      "r": {
+        "op": "add",
+        "args": [
+          "dot.r",
+          0.5
+        ]
+      },
+      "fill": null,
+      "stroke": "white",
+      "stroke_width": 0.04
+    },
+    {
+      "id": "floor",
+      "opacity": 1.0,
+      "type": "line",
+      "x1": -3.5,
+      "y1": -0.6,
+      "x2": 3.5,
+      "y2": -0.6,
+      "stroke": "#444444",
+      "stroke_width": 0.03
+    },
+    {
+      "id": "label",
+      "opacity": 1.0,
+      "type": "text",
+      "content": "state(t) is a pure function",
+      "x": 0.0,
+      "y": -1.6,
+      "size": 0.4,
+      "fill": "#cccccc",
+      "font": null,
+      "align": "center"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "duration": 5,
+  "fps": 60,
+  "size": [1920, 1080],
+  "background": "#0e0e11",
+  "objects": [
+    {"id": "track", "type": "line", "x1": -3.2, "y1": -0.9, "x2": 3.2, "y2": -0.9, "stroke": "#2a2a30", "stroke_width": 0.04},
+    {"id": "ball", "type": "circle", "r": 0.35, "fill": "#ff7f50",
+     "x": {"op": "tween", "keys": [[0.4, -3], [1.8, 2.4], [3.2, -1.0], [4.4, 3]], "ease": "in_out_cubic"},
+     "y": {"op": "add", "args": [-0.55, {"op": "mul", "args": [0.9, {"op": "abs", "args": [{"op": "sin", "args": ["4*t"]}]}]}]}},
+    {"id": "shadow", "type": "rect", "x": "ball.x", "y": -0.92, "h": 0.06, "corner_radius": 0.03, "fill": "#000000",
+     "w": {"op": "sub", "args": [1.2, {"op": "mul", "args": [0.5, {"op": "add", "args": ["ball.y", 0.55]}]}]},
+     "opacity": {"op": "sub", "args": [0.7, {"op": "mul", "args": [0.4, {"op": "add", "args": ["ball.y", 0.55]}]}]}},
+    {"id": "box", "type": "rect", "w": 0.9, "h": 0.9, "corner_radius": 0.12, "x": 2.2, "y": 1.1, "fill": "#4a90d9",
+     "rotation": {"op": "tween", "keys": [[1, 0], [2.5, 180]], "ease": "spring"},
+     "opacity": {"op": "tween", "keys": [[0.8, 0], [1.2, 1]]}},
+    {"id": "orbit", "type": "group", "x": -2.2, "y": 1.1, "rotation": "90*t", "children": [
+      {"id": "o1", "type": "circle", "x": 0.6, "r": 0.12, "fill": "#ffd166"},
+      {"id": "o2", "type": "circle", "x": -0.6, "r": 0.12, "fill": "#06d6a0"},
+      {"id": "o3", "type": "circle", "y": 0.6, "r": 0.12, "fill": "#ef476f"},
+      {"id": "o4", "type": "circle", "y": -0.6, "r": 0.12, "fill": "#118ab2"}
+    ]},
+    {"id": "title", "type": "text", "content": "Eased motion, real motion blur", "y": -1.7, "size": 0.42,
+     "fill": {"op": "tween", "keys": [[0, "#0e0e11"], [1, "#e8e8ec"]], "ease": "out_quad"}}
+  ]
+}
