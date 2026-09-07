@@ -52,3 +52,13 @@ scene.save("scene.json"); scene.render("out.mp4")
 ```
 
 Read `obj.prop` to get the stored expression; use `obj.ref.prop` to reference it from another object.
+
+## Algorithm walkthroughs (staged, data-driven scenes)
+
+Simulate the algorithm in plain Python first and record a list of steps (what moves, from where, to where,
+at which beat). Then turn each step into keyframes: a cell is a `group` (rect + text) whose `x`/`y` tween
+from its slot to its destination at that beat, and holds there forever after because a tween holds its
+last key. Highlights are multi-key tweens on `scale` and `stroke` (base -> white -> base); per-step captions
+are separate `text` objects with an opacity window. Draw order matters when cells cross each other: add the
+cells that move on top last. Arc a move with `y = tween(...) + lift * 4*u*(1-u)`, `u = clamp((t - t0)/dur, 0, 1)`.
+See `examples/merge_sorted.py`.

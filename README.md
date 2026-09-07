@@ -112,7 +112,7 @@ src/buttery/
   tools.py       validate / state / preview / render (JSON in, JSON out)
   cli.py         `buttery` command
   mcp_server.py  MCP server
-examples/        bounce.py, squash_bounce.py (Python), bounce.json, squash_bounce.json, launch_demo.json
+examples/        bounce.py, squash_bounce.py, merge_sorted.py (Python) and their .json, launch_demo.json
 skill/           Claude Code skill
 tests/
 ```
