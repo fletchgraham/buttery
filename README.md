@@ -9,6 +9,11 @@ Pydantic models *are* the schema. JSON is the product contract; the Python API i
 
 *`examples/merge_sorted.py`: the merge is simulated in Python, then each step becomes keyframes.*
 
+![Red-black tree left rotation, one step at a time](https://raw.githubusercontent.com/fletchgraham/buttery/main/examples/rb_rotation.gif)
+
+*`examples/rb_rotation.py`: nodes are groups, edges are lines whose endpoints reference the nodes, so the
+edges follow the rotation for free. The before/after trees are two tuples; the script diffs them.*
+
 ```
 Agent tool surface   validate / state / preview / render     (tools.py, cli.py, mcp_server.py)
 Authoring            Python sugar  <->  JSON                 (objects.py, expr.py, parse.py)
@@ -73,7 +78,7 @@ Shorthand strings like `"dot.r + 0.5"` parse (no `eval`) into the same op tree. 
 prints the JSON schema from `Scene.model_json_schema()`.
 
 **Coordinates**: world units, origin at center, y up. The frame is `view_width` (default 8) units wide.
-**Primitives**: `circle rect line text group`. **Ops**: `add sub mul div neg sin cos abs min max clamp smoothstep noise`.
+**Primitives**: `circle rect line text group`. `text` wraps at `max_width` and honors newlines. **Ops**: `add sub mul div neg sin cos abs min max clamp smoothstep noise`.
 **Eases**: `linear in_quad out_quad in_out_quad out_cubic in_out_cubic spring`. Colors: hex or CSS names;
 `fill`/`stroke` can be tweened between colors.
 
@@ -116,7 +121,7 @@ src/buttery/
   tools.py       validate / state / preview / render (JSON in, JSON out)
   cli.py         `buttery` command
   mcp_server.py  MCP server
-examples/        bounce.py, squash_bounce.py, merge_sorted.py (Python) and their .json, launch_demo.json
+examples/        bounce.py, squash_bounce.py, merge_sorted.py, rb_rotation.py (Python) and their .json, launch_demo.json
 skill/           Claude Code skill
 tests/
 ```
