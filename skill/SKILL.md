@@ -53,7 +53,7 @@ Object types and properties (every object needs a unique `id`; `opacity` on all)
 | circle | x y r fill stroke stroke_width |
 | rect   | x y w h corner_radius rotation fill stroke stroke_width (x,y is the center) |
 | line   | x1 y1 x2 y2 stroke stroke_width |
-| text   | content font align (static) · x y size fill |
+| text   | content font align max_width line_height (static) · x y size fill · newlines in content start new lines; max_width wraps at words |
 | group  | x y rotation scale children[] (children ids are global) |
 
 Any numeric property accepts: a number · `"t"` · `"<id>.<prop>"` · shorthand `"0.2*sin(6*t)"` ·

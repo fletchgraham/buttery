@@ -144,15 +144,22 @@ class Rasterizer:
         font = skia.Font(self._typeface(o["font"]), size_px)
         font.setSubpixel(True)
         font.setEdging(skia.Font.Edging.kSubpixelAntiAlias)
-        width = font.measureText(content)
         metrics = font.getMetrics()
         cap = metrics.fCapHeight if metrics.fCapHeight > 0 else -(metrics.fAscent + metrics.fDescent)
+        max_px = o["max_width"] * self.px if o["max_width"] is not None else None
+        lines = wrap_lines(content, lambda s: font.measureText(s), max_px)
+        step = o["line_height"] * size_px
         align = o["align"]
-        dx = -width / 2.0 if align == "center" else (-width if align == "right" else 0.0)
+        paint = self._paint(o["fill"], a)
         c.save()
         c.translate(o["x"], o["y"])
         c.scale(1.0 / self.px, -1.0 / self.px)  # back to pixel space, y down, for crisp glyphs
-        c.drawString(content, dx, cap / 2.0, font, self._paint(o["fill"], a))
+        # the block of lines is centered on y: the first baseline sits half the block height above center
+        y0 = cap / 2.0 - (len(lines) - 1) * step / 2.0
+        for i, line in enumerate(lines):
+            width = font.measureText(line)
+            dx = -width / 2.0 if align == "center" else (-width if align == "right" else 0.0)
+            c.drawString(line, dx, y0 + i * step, font, paint)
         c.restore()
 
     def _paint(self, color: str, alpha: float, stroke_width: float | None = None) -> skia.Paint:
@@ -173,6 +180,28 @@ class Rasterizer:
 
 
 # ---------------------------------------------------------------------- helpers
+
+def wrap_lines(content: str, measure: Callable[[str], float], max_width: float | None) -> list[str]:
+    """Split on newlines, then greedily wrap each line at word boundaries so it measures <= max_width.
+
+    A single word wider than max_width stays on its own line rather than being broken mid-word.
+    """
+    out: list[str] = []
+    for para in content.split("\n"):
+        if max_width is None or measure(para) <= max_width:
+            out.append(para)
+            continue
+        line = ""
+        for word in para.split(" "):
+            trial = word if not line else f"{line} {word}"
+            if line and measure(trial) > max_width:
+                out.append(line)
+                line = word
+            else:
+                line = trial
+        out.append(line)
+    return out
+
 
 DEFAULT_FONTS = ("Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans", "Liberation Sans")
 _font_mgr: skia.FontMgr | None = None

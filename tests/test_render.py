@@ -109,3 +109,34 @@ def test_cli_validate_and_state(tmp_path, capsys):
     p.write_text('{"duration": 1, "objects": [{"id": "a", "type": "circle", "x": "b.x"}]}')
     assert main(["validate", str(p)]) == 1
     assert '"ok": false' in capsys.readouterr().out
+
+
+def _ink_bbox(frame):
+    """Rows and columns that contain any non-background pixel."""
+    ink = frame[..., :3].max(axis=2) > 40
+    rows = np.where(ink.any(axis=1))[0]
+    cols = np.where(ink.any(axis=0))[0]
+    return rows.min(), rows.max(), cols.min(), cols.max()
+
+
+def test_wrap_lines_breaks_at_words_and_keeps_newlines():
+    from buttery.render import wrap_lines
+
+    measure = len  # one unit per character
+    assert wrap_lines("one two three four", measure, 9) == ["one two", "three", "four"]
+    assert wrap_lines("short\nalso short", measure, 50) == ["short", "also short"]
+    assert wrap_lines("supercalifragilistic word", measure, 5) == ["supercalifragilistic", "word"]
+    assert wrap_lines("no wrap", measure, None) == ["no wrap"]
+
+
+def test_text_max_width_wraps_into_a_taller_narrower_block():
+    long = "the quick brown fox jumps over the lazy dog again and again"
+    wide = Scene(duration=1, size=(320, 180), view_width=8, objects=[Text("t", content=long, size=0.3)])
+    wrapped = Scene(duration=1, size=(320, 180), view_width=8,
+                    objects=[Text("t", content=long, size=0.3, max_width=3.0)])
+    a = _ink_bbox(Rasterizer(wide.compile(), 320, 180).frame(0.0, motion_blur=False))
+    b = _ink_bbox(Rasterizer(wrapped.compile(), 320, 180).frame(0.0, motion_blur=False))
+    assert (b[3] - b[2]) < (a[3] - a[2])          # narrower
+    assert (b[1] - b[0]) > 2 * (a[1] - a[0])      # several lines tall
+    assert b[3] - b[2] <= 3.0 * 40 + 2            # inside max_width (40 px per unit), antialias slack
+    assert abs((b[0] + b[1]) / 2 - 90) < 6        # block stays centered on y=0

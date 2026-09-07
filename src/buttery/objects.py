@@ -102,7 +102,11 @@ class Line(SceneObject):
 
 
 class Text(SceneObject):
-    """Text anchored at (x, y). `size` is the font size in world units."""
+    """Text anchored at (x, y). `size` is the font size in world units.
+
+    Newlines in `content` start new lines; `max_width` wraps long lines at word boundaries. A multi-line
+    block is centered vertically on `y`, so a single line sits exactly where it did before.
+    """
 
     type: Literal["text"] = "text"
     content: str = ""
@@ -112,6 +116,10 @@ class Text(SceneObject):
     fill: ColorExpr = "white"
     font: str | None = Field(default=None, description="Font family name, e.g. 'Helvetica'. Null = system default.")
     align: Literal["left", "center", "right"] = "center"
+    max_width: float | None = Field(
+        default=None, gt=0, description="Wrap at this width in world units (word boundaries). Null = never wrap."
+    )
+    line_height: float = Field(default=1.25, gt=0, description="Line spacing as a multiple of `size`.")
 
 
 class Group(SceneObject):

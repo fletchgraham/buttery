@@ -46,7 +46,7 @@ Coordinate space: world units, origin at center, y up. Default view spans ~8 uni
 | `circle`  | x, y, r, fill, stroke, stroke_width, opacity                      |
 | `rect`    | x, y, w, h, corner_radius, fill, stroke, stroke_width, opacity, rotation |
 | `line`    | x1, y1, x2, y2, stroke, stroke_width, opacity                     |
-| `text`    | content (static), x, y, size, fill, opacity, font (static)        |
+| `text`    | content, font, align, max_width, line_height (static), x, y, size, fill, opacity |
 | `group`   | x, y, rotation, scale, opacity, children                          |
 
 Every object has a unique `id` (string). Colors are hex or named.
