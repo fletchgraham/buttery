@@ -49,7 +49,9 @@ class Rasterizer:
         self.width = width
         self.height = height
         self.px = width / self.scene.view_width
-        self.surface = skia.Surface(width, height)
+        # Explicit RGBA: the N32 default is RGBA on macOS but BGRA on Linux.
+        info = skia.ImageInfo.Make(width, height, skia.ColorType.kRGBA_8888_ColorType, skia.AlphaType.kPremul_AlphaType)
+        self.surface = skia.Surface.MakeRaster(info)
         self.canvas = self.surface.getCanvas()
         self.bg = _skcolor(parse_color(self.scene.background))
         self._typefaces: dict[str | None, skia.Typeface] = {}
