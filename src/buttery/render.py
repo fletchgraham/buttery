@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Any, Callable
 import numpy as np
 import skia
 
-from .code import line_ranges
+from .code import line_ranges, python_tokens, theme_colors
 from .color import parse_color
 from .errors import RenderError
 
@@ -165,8 +165,8 @@ class Rasterizer:
         """Monospace block on a fixed grid, top-left at (x, y): column pitch `char_width * size`, row pitch
         `line_height * size`. Every character is drawn on its own at its grid cell, which is exactly right for a
         monospace font (no kerning) and keeps the layout identical whatever font is actually found. A character's
-        fill comes from the last span covering it (else the block); its alpha is the block's times every covering
-        span's opacity, the same rule a group applies to its children.
+        fill is layered: the block's `fill`, then its token's theme color, then the last span covering it. Its alpha
+        is the block's times every covering span's opacity, the same rule a group applies to its children.
         """
         content = o["content"]
         if not content or o["size"] <= 0:
@@ -174,6 +174,13 @@ class Rasterizer:
         n = len(content)
         fills: list[str | None] = [o["fill"]] * n
         alphas = [a] * n
+        colors = theme_colors(o["theme"])
+        if colors:
+            for tok in python_tokens(content):  # cached per snippet
+                color = colors.get(tok.kind)
+                if color is not None:
+                    for i in range(tok.start, tok.end):
+                        fills[i] = color
         for span in o["spans"]:
             sa = _clamp01(span["opacity"])
             for i in range(span["start"], span["end"]):

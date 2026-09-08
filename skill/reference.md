@@ -81,6 +81,10 @@ Parts of the snippet are selected with `spans`, each with an `id` and animatable
 - **Reveal line by line**: one span per line with `opacity` tweening 0 -> 1 on its beat.
 - **Highlight, then let go**: tween `background` from `"transparent"` to a color and back; tween `fill` from
   the block's color to an accent and back. The first key holds before its time, so the span is invisible until then.
+- **Syntax highlighting**: `"theme": "default"` colors keywords, strings, numbers and comments (names and
+  operators keep `fill`). A custom theme is a mapping, e.g. `{"keyword": "coral", "comment": "#666"}`; kinds are
+  `keyword name number string op comment`. Theme colors sit under spans, so a span `fill` still wins; to highlight
+  without losing token colors, tween a span's `background` only.
 - Python: `code.select("kw", token="return", fill="coral")` builds and appends the span, and fails at once if
   the selector does not resolve. See `examples/code_walk.py`.
 

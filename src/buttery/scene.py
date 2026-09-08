@@ -113,6 +113,11 @@ class Scene(BaseModel):
 
         for obj, path in walk(self.objects):
             if isinstance(obj, Code):
+                if obj.theme is not None:
+                    try:
+                        obj.tokens()
+                    except ValueError as exc:
+                        errors.append(SceneError(path=f"{path}.theme", message=f"theme needs valid Python: {exc}", object=obj.id, property="theme"))
                 for j, span in enumerate(obj.spans):
                     try:
                         obj.span_range(span)

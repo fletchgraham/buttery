@@ -132,3 +132,44 @@ def test_span_opacity_multiplies_like_a_group():
     code.opacity = 0.0  # the block's opacity wins even where a span says 1
     code.select("show_a", chars=(0, 1), opacity=1.0)
     assert not (_frame(code) > 0).any()
+
+
+def test_theme_colors_tokens_under_spans():
+    # "if" is a keyword (purple in the default theme); the span on "f" recolors just that cell
+    code = Code("c", content="if", size=1.0, x=-0.6, y=0.7, theme="default")
+    code.select("s", chars=(1, 2), fill="red")
+    img = _frame(code)
+    a, b = _cells()
+    purple = (img[..., 0] > 150) & (img[..., 1] < 150) & (img[..., 2] > 150)
+    red = (img[..., 0] > 200) & (img[..., 1] < 60) & (img[..., 2] < 60)
+    assert purple[a].any() and not red[a].any()
+    assert red[b].any() and not purple[b].any()
+
+
+def test_custom_theme_and_unthemed_kinds_keep_fill():
+    code = Code("c", content="if", size=1.0, x=-0.6, y=0.7, theme={"comment": "red"})  # keywords not listed
+    img = _frame(code)
+    a, _ = _cells()
+    cell = img[a]
+    assert ((cell[..., 0] > 200) & (cell[..., 1] > 200) & (cell[..., 2] > 200)).any()  # still white
+    assert code.theme_colors() == {"comment": code.theme["comment"]}
+    assert Code("d", content="x", theme="default").theme_colors()["keyword"].startswith("#")
+
+
+def test_theme_errors():
+    with pytest.raises(ValueError, match="unknown theme 'neon'"):
+        Code("c", content="x", theme="neon")
+    with pytest.raises(ValueError, match="'kw' is not a valid|Input should be"):
+        Code("c", content="x", theme={"kw": "red"})
+    with pytest.raises(SceneValidationError) as exc:
+        Scene.from_json({"duration": 1, "objects": [{"id": "c", "type": "code", "content": "s = 'open", "theme": "default"}]})
+    (err,) = exc.value.errors
+    assert err.path == "objects[0].theme" and err.property == "theme" and "valid Python" in err.message
+    Scene.from_json({"duration": 1, "objects": [{"id": "c", "type": "code", "content": "s = 'open"}]})  # fine without a theme
+
+
+def test_theme_roundtrips_through_json():
+    code = Code("c", content="x = 1  # one", theme={"comment": "#5c6370", "number": "coral"})
+    scene = Scene(duration=1).add(code)
+    again = Scene.from_json(scene.to_json())
+    assert again == scene and again.state(0)["objects"][0]["theme"] == {"comment": "#5c6370", "number": "coral"}

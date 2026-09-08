@@ -118,4 +118,28 @@ def resolve_selection(
     raise ValueError("a span needs at least one of: line, token, chars")
 
 
-__all__ = ["Token", "TokenKind", "line_range", "line_ranges", "python_tokens", "resolve_selection"]
+# --------------------------------------------------------------------------- syntax highlighting
+
+Theme = dict[TokenKind, str]
+
+THEMES: dict[str, Theme] = {
+    # Kinds left out keep the block's `fill`; here names and operators stay in the ink color.
+    "default": {"keyword": "#c678dd", "string": "#98c379", "number": "#d19a66", "comment": "#5c6370"},
+}
+
+
+def theme_colors(theme: str | Theme | None) -> Theme:
+    """Resolve a theme value (built-in name, custom mapping, or None) to token kind -> color."""
+    if theme is None:
+        return {}
+    if isinstance(theme, str):
+        if theme not in THEMES:
+            raise ValueError(f"unknown theme {theme!r}; built-in themes: {', '.join(THEMES)}")
+        return THEMES[theme]
+    return theme
+
+
+__all__ = [
+    "THEMES", "Theme", "Token", "TokenKind", "line_range", "line_ranges", "python_tokens", "resolve_selection",
+    "theme_colors",
+]

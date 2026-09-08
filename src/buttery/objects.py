@@ -6,7 +6,8 @@ from typing import Annotated, Any, ClassVar, Iterator, Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from .code import Token, python_tokens, resolve_selection
+from .code import Theme, Token, TokenKind, python_tokens, resolve_selection, theme_colors
+from .color import Color
 from .expr import ColorExpr, Expr, Kind, Ref
 
 _ID_PATTERN = r"^[A-Za-z_][A-Za-z0-9_]*$"
@@ -156,7 +157,8 @@ class Code(SceneObject):
     Characters sit on a fixed grid: column c of row r is at (x + c * char_width * size, y - r * line_height * size).
     The grid, not the font, decides the layout, so positions are the same on every machine and can be computed
     without a renderer (`width`, `height`). `spans` style parts of the snippet; `select()` is the sugar for adding one.
-    Only `token` selection needs the snippet to be valid Python; `line` and `chars` work on any text.
+    `theme` colors Python tokens by kind (spans still win). Only `token` selection and `theme` need the snippet to be
+    valid Python; `line` and `chars` work on any text.
     """
 
     type: Literal["code"] = "code"
@@ -168,6 +170,11 @@ class Code(SceneObject):
     font: str | None = Field(default=None, description="Monospace family name. Null = Menlo / Consolas / DejaVu Sans Mono / Courier.")
     char_width: float = Field(default=0.6, gt=0, description="Column pitch as a multiple of `size` (0.6 matches most monospace fonts).")
     line_height: float = Field(default=1.4, gt=0, description="Row pitch as a multiple of `size`.")
+    theme: str | dict[TokenKind, Color] | None = Field(
+        default=None,
+        description="Syntax highlighting: a built-in theme name ('default') or a mapping of token kind "
+        "(keyword, name, number, string, op, comment) to color. Kinds not listed keep `fill`. Null = no highlighting.",
+    )
     spans: list[Span] = Field(default_factory=list)
 
     @field_validator("content")
@@ -176,6 +183,16 @@ class Code(SceneObject):
         if "\t" in v:
             raise ValueError("use spaces, not tabs: the grid is one character per column")
         return v
+
+    @field_validator("theme")
+    @classmethod
+    def _known_theme(cls, v: Any) -> Any:
+        theme_colors(v)  # raises for an unknown built-in name
+        return v
+
+    def theme_colors(self) -> Theme:
+        """Token kind -> color for this block's theme (empty when there is no theme)."""
+        return theme_colors(self.theme)
 
     def select(self, id: str, **spec: Any) -> Span:
         """Add a span. `line`, `token`, `nth`, `chars` pick the characters; the rest are Span properties."""

@@ -16,8 +16,8 @@ edges follow the rotation for free. The before/after trees are two tuples; the s
 
 ![Walking through a function, one line at a time](https://raw.githubusercontent.com/fletchgraham/buttery/main/examples/code_walk.gif)
 
-*`examples/code_walk.py`: a `code` block reveals a line per beat, then spans select by Python token, by line,
-and by character range to highlight what each caption talks about.*
+*`examples/code_walk.py`: a syntax-highlighted `code` block reveals a line per beat, then spans select by Python
+token, by line, and by character range to highlight what each caption talks about.*
 
 ```
 Agent tool surface   validate / state / preview / render     (tools.py, cli.py, mcp_server.py)
@@ -85,7 +85,8 @@ prints the JSON schema from `Scene.model_json_schema()`.
 **Coordinates**: world units, origin at center, y up. The frame is `view_width` (default 8) units wide.
 **Primitives**: `circle rect line text code group`. `text` wraps at `max_width` and honors newlines. `code` is a
 monospace block on a fixed character grid; its `spans` select characters by `line`, by Python `token`, or by
-`chars` range and give them their own `fill`, `background` and `opacity`. **Ops**: `add sub mul div neg sin cos abs min max clamp smoothstep noise`.
+`chars` range and give them their own `fill`, `background` and `opacity`; `theme: "default"` (or a kind -> color
+mapping) syntax-highlights Python tokens. **Ops**: `add sub mul div neg sin cos abs min max clamp smoothstep noise`.
 **Eases**: `linear in_quad out_quad in_out_quad out_cubic in_out_cubic spring`. Colors: hex or CSS names;
 `fill`/`stroke` can be tweened between colors.
 
@@ -122,7 +123,7 @@ src/buttery/
   expr.py        AST models (Op, Tween, Ref), operator overloading, sugar (T, sin, tween, keyframes, ...)
   parse.py       shorthand parser -> AST, constant folding
   objects.py     Circle, Rect, Line, Text, Code (+ Span), Group
-  code.py        Python tokenizer and line / token / chars selection -> character ranges
+  code.py        Python tokenizer, line / token / chars selection -> character ranges, highlight themes
   scene.py       Scene, semantic checks, state(t)
   evaluate.py    compile + topological evaluation
   render.py      skia rasterizer, motion blur, parallel render, ffmpeg

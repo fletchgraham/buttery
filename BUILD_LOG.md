@@ -39,3 +39,7 @@ Order of work, bottom up. Each step was smoke-tested before the next.
   token, character range) resolves to one canonical `[start, end)` range, which is all the evaluator and
   renderer see; span opacity multiplies like a group's so a per-line reveal and a later highlight compose.
   Syntax highlighting is a later step on top of `code.python_tokens` (each token already carries a kind).
+- **Syntax highlighting** (2026-09-08). `theme` on `code`: a built-in name or a token-kind -> color mapping
+  (`code.THEMES`, `theme_colors`). Applied in the renderer as one more fill layer between the block's `fill` and
+  its spans, so nothing else changed: no new objects, no JSON growth, spans still win. Validation checks the
+  theme name structurally and that the snippet tokenizes semantically (`objects[i].theme`).
