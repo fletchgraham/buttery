@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from typing import Annotated, Any, ClassVar, Iterator, Literal, Union
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from .code import Token, python_tokens, resolve_selection
 from .expr import ColorExpr, Expr, Kind, Ref
 
 _ID_PATTERN = r"^[A-Za-z_][A-Za-z0-9_]*$"
@@ -60,7 +61,7 @@ class SceneObject(BaseModel):
     @classmethod
     def static_props(cls) -> list[str]:
         anim = cls.animatable()
-        return [n for n in cls.model_fields if n not in anim and n not in ("id", "type", "children")]
+        return [n for n in cls.model_fields if n not in anim and n not in ("id", "type", "children", "spans")]
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}({self.id!r})"
@@ -122,6 +123,92 @@ class Text(SceneObject):
     line_height: float = Field(default=1.25, gt=0, description="Line spacing as a multiple of `size`.")
 
 
+class Span(SceneObject):
+    """A selection inside a `Code` block: the selected characters get their own fill, background and opacity.
+
+    Which characters (see `code.resolve_selection`): `line` narrows to one 1-based line, then
+      chars=[a, b]   a half-open character range (offsets into the snippet, or columns on `line`)
+      token="def"    the nth Python token with exactly that text; `nth` counts from 0, negative from the end
+      line alone     the whole line
+    A null `fill` keeps the code's fill. `opacity` multiplies the opacity of the characters it covers (like a
+    group's does for its children), so a per-line reveal and a later highlight compose. `background` paints the
+    covered cells. Spans apply in order: where two set `fill`, the later one wins.
+    """
+
+    type: Literal["span"] = "span"
+    line: int | None = Field(default=None, ge=1)
+    token: str | None = None
+    nth: int = 0
+    chars: tuple[int, int] | None = None
+    fill: ColorExpr = None
+    background: ColorExpr = None
+
+    @model_validator(mode="after")
+    def _has_selector(self) -> "Span":
+        if self.line is None and self.token is None and self.chars is None:
+            raise ValueError("a span needs at least one of: line, token, chars")
+        return self
+
+
+class Code(SceneObject):
+    """A monospace code block anchored at its top-left corner (x, y). `size` is the font size in world units.
+
+    Characters sit on a fixed grid: column c of row r is at (x + c * char_width * size, y - r * line_height * size).
+    The grid, not the font, decides the layout, so positions are the same on every machine and can be computed
+    without a renderer (`width`, `height`). `spans` style parts of the snippet; `select()` is the sugar for adding one.
+    Only `token` selection needs the snippet to be valid Python; `line` and `chars` work on any text.
+    """
+
+    type: Literal["code"] = "code"
+    content: str = ""
+    x: Expr = 0.0
+    y: Expr = 0.0
+    size: Expr = 0.3
+    fill: ColorExpr = "white"
+    font: str | None = Field(default=None, description="Monospace family name. Null = Menlo / Consolas / DejaVu Sans Mono / Courier.")
+    char_width: float = Field(default=0.6, gt=0, description="Column pitch as a multiple of `size` (0.6 matches most monospace fonts).")
+    line_height: float = Field(default=1.4, gt=0, description="Row pitch as a multiple of `size`.")
+    spans: list[Span] = Field(default_factory=list)
+
+    @field_validator("content")
+    @classmethod
+    def _no_tabs(cls, v: str) -> str:
+        if "\t" in v:
+            raise ValueError("use spaces, not tabs: the grid is one character per column")
+        return v
+
+    def select(self, id: str, **spec: Any) -> Span:
+        """Add a span. `line`, `token`, `nth`, `chars` pick the characters; the rest are Span properties."""
+        span = Span(id, **spec)
+        self.span_range(span)  # fail now, with a clear message, rather than at Scene time
+        self.spans.append(span)
+        return span
+
+    def span_range(self, span: Span) -> tuple[int, int]:
+        """The [start, end) character range a span selects. Raises ValueError if it does not resolve."""
+        return resolve_selection(self.content, line=span.line, token=span.token, nth=span.nth, chars=span.chars)
+
+    def tokens(self) -> tuple[Token, ...]:
+        return python_tokens(self.content)
+
+    @property
+    def rows(self) -> int:
+        return self.content.count("\n") + 1
+
+    @property
+    def cols(self) -> int:
+        return max(len(line) for line in self.content.split("\n"))
+
+    @property
+    def width(self) -> Any:
+        """Block width in world units. An expression if `size` is one, so `code.x = -code.width / 2` centers it."""
+        return self.cols * self.char_width * self.size
+
+    @property
+    def height(self) -> Any:
+        return self.rows * self.line_height * self.size
+
+
 class Group(SceneObject):
     """Transforms children: translate(x, y), rotate (degrees), uniform scale, opacity."""
 
@@ -137,11 +224,13 @@ class Group(SceneObject):
         return self
 
 
-AnyObject = Annotated[Union[Circle, Rect, Line, Text, Group], Field(discriminator="type")]
+AnyObject = Annotated[Union[Circle, Rect, Line, Text, Code, Group], Field(discriminator="type")]
 
 Group.model_rebuild()
 
-OBJECT_TYPES: dict[str, type[SceneObject]] = {"circle": Circle, "rect": Rect, "line": Line, "text": Text, "group": Group}
+OBJECT_TYPES: dict[str, type[SceneObject]] = {
+    "circle": Circle, "rect": Rect, "line": Line, "text": Text, "code": Code, "span": Span, "group": Group,
+}
 
 
 def walk(objects: list[SceneObject], path: str = "objects") -> Iterator[tuple[SceneObject, str]]:
@@ -151,6 +240,8 @@ def walk(objects: list[SceneObject], path: str = "objects") -> Iterator[tuple[Sc
         yield obj, p
         if isinstance(obj, Group):
             yield from walk(obj.children, f"{p}.children")
+        elif isinstance(obj, Code):
+            yield from walk(obj.spans, f"{p}.spans")
 
 
-__all__ = ["AnyObject", "Circle", "Group", "Line", "OBJECT_TYPES", "Rect", "SceneObject", "Text", "walk"]
+__all__ = ["AnyObject", "Circle", "Code", "Group", "Line", "OBJECT_TYPES", "Rect", "SceneObject", "Span", "Text", "walk"]

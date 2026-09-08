@@ -1,0 +1,619 @@
+{
+  "size": [
+    1920,
+    1080
+  ],
+  "fps": 60,
+  "duration": 12.5,
+  "background": "#0e0e11",
+  "view_width": 8.0,
+  "objects": [
+    {
+      "id": "title",
+      "opacity": 1.0,
+      "type": "text",
+      "content": "clamp, line by line",
+      "x": 0.0,
+      "y": 1.85,
+      "size": 0.3,
+      "fill": "#e8e8ee",
+      "font": null,
+      "align": "center",
+      "max_width": null,
+      "line_height": 1.25
+    },
+    {
+      "id": "fn",
+      "opacity": 1.0,
+      "type": "code",
+      "content": "def clamp(x, lo, hi):\n    if x < lo:\n        return lo\n    return min(x, hi)",
+      "x": -2.142,
+      "y": 1.252,
+      "size": 0.34,
+      "fill": "#e8e8ee",
+      "font": null,
+      "char_width": 0.6,
+      "line_height": 1.4,
+      "spans": [
+        {
+          "id": "line1",
+          "opacity": {
+            "op": "tween",
+            "keys": [
+              [
+                0.6,
+                0.0
+              ],
+              [
+                1.05,
+                1.0
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "type": "span",
+          "line": 1,
+          "token": null,
+          "nth": 0,
+          "chars": null,
+          "fill": null,
+          "background": null
+        },
+        {
+          "id": "line2",
+          "opacity": {
+            "op": "tween",
+            "keys": [
+              [
+                1.15,
+                0.0
+              ],
+              [
+                1.5999999999999999,
+                1.0
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "type": "span",
+          "line": 2,
+          "token": null,
+          "nth": 0,
+          "chars": null,
+          "fill": null,
+          "background": null
+        },
+        {
+          "id": "line3",
+          "opacity": {
+            "op": "tween",
+            "keys": [
+              [
+                1.7000000000000002,
+                0.0
+              ],
+              [
+                2.1500000000000004,
+                1.0
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "type": "span",
+          "line": 3,
+          "token": null,
+          "nth": 0,
+          "chars": null,
+          "fill": null,
+          "background": null
+        },
+        {
+          "id": "line4",
+          "opacity": {
+            "op": "tween",
+            "keys": [
+              [
+                2.25,
+                0.0
+              ],
+              [
+                2.7,
+                1.0
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "type": "span",
+          "line": 4,
+          "token": null,
+          "nth": 0,
+          "chars": null,
+          "fill": null,
+          "background": null
+        },
+        {
+          "id": "step0_0",
+          "opacity": 1.0,
+          "type": "span",
+          "line": null,
+          "token": "x",
+          "nth": 0,
+          "chars": null,
+          "fill": {
+            "op": "tween",
+            "keys": [
+              [
+                3.3000000000000003,
+                "#e8e8ee"
+              ],
+              [
+                3.6,
+                "#e0a54a"
+              ],
+              [
+                5.8,
+                "#e0a54a"
+              ],
+              [
+                6.1,
+                "#e8e8ee"
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "background": {
+            "op": "tween",
+            "keys": [
+              [
+                3.3000000000000003,
+                "transparent"
+              ],
+              [
+                3.6,
+                "#2b2b3d"
+              ],
+              [
+                5.8,
+                "#2b2b3d"
+              ],
+              [
+                6.1,
+                "transparent"
+              ]
+            ],
+            "ease": "out_quad"
+          }
+        },
+        {
+          "id": "step0_1",
+          "opacity": 1.0,
+          "type": "span",
+          "line": null,
+          "token": "x",
+          "nth": 1,
+          "chars": null,
+          "fill": {
+            "op": "tween",
+            "keys": [
+              [
+                3.3000000000000003,
+                "#e8e8ee"
+              ],
+              [
+                3.6,
+                "#e0a54a"
+              ],
+              [
+                5.8,
+                "#e0a54a"
+              ],
+              [
+                6.1,
+                "#e8e8ee"
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "background": {
+            "op": "tween",
+            "keys": [
+              [
+                3.3000000000000003,
+                "transparent"
+              ],
+              [
+                3.6,
+                "#2b2b3d"
+              ],
+              [
+                5.8,
+                "#2b2b3d"
+              ],
+              [
+                6.1,
+                "transparent"
+              ]
+            ],
+            "ease": "out_quad"
+          }
+        },
+        {
+          "id": "step0_2",
+          "opacity": 1.0,
+          "type": "span",
+          "line": null,
+          "token": "x",
+          "nth": 2,
+          "chars": null,
+          "fill": {
+            "op": "tween",
+            "keys": [
+              [
+                3.3000000000000003,
+                "#e8e8ee"
+              ],
+              [
+                3.6,
+                "#e0a54a"
+              ],
+              [
+                5.8,
+                "#e0a54a"
+              ],
+              [
+                6.1,
+                "#e8e8ee"
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "background": {
+            "op": "tween",
+            "keys": [
+              [
+                3.3000000000000003,
+                "transparent"
+              ],
+              [
+                3.6,
+                "#2b2b3d"
+              ],
+              [
+                5.8,
+                "#2b2b3d"
+              ],
+              [
+                6.1,
+                "transparent"
+              ]
+            ],
+            "ease": "out_quad"
+          }
+        },
+        {
+          "id": "step0_3",
+          "opacity": 1.0,
+          "type": "span",
+          "line": 1,
+          "token": null,
+          "nth": 0,
+          "chars": [
+            13,
+            19
+          ],
+          "fill": {
+            "op": "tween",
+            "keys": [
+              [
+                3.3000000000000003,
+                "#e8e8ee"
+              ],
+              [
+                3.6,
+                "#e0a54a"
+              ],
+              [
+                5.8,
+                "#e0a54a"
+              ],
+              [
+                6.1,
+                "#e8e8ee"
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "background": {
+            "op": "tween",
+            "keys": [
+              [
+                3.3000000000000003,
+                "transparent"
+              ],
+              [
+                3.6,
+                "#2b2b3d"
+              ],
+              [
+                5.8,
+                "#2b2b3d"
+              ],
+              [
+                6.1,
+                "transparent"
+              ]
+            ],
+            "ease": "out_quad"
+          }
+        },
+        {
+          "id": "step1_0",
+          "opacity": 1.0,
+          "type": "span",
+          "line": 2,
+          "token": null,
+          "nth": 0,
+          "chars": null,
+          "fill": {
+            "op": "tween",
+            "keys": [
+              [
+                6.1,
+                "#e8e8ee"
+              ],
+              [
+                6.3999999999999995,
+                "#e0a54a"
+              ],
+              [
+                8.6,
+                "#e0a54a"
+              ],
+              [
+                8.9,
+                "#e8e8ee"
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "background": {
+            "op": "tween",
+            "keys": [
+              [
+                6.1,
+                "transparent"
+              ],
+              [
+                6.3999999999999995,
+                "#2b2b3d"
+              ],
+              [
+                8.6,
+                "#2b2b3d"
+              ],
+              [
+                8.9,
+                "transparent"
+              ]
+            ],
+            "ease": "out_quad"
+          }
+        },
+        {
+          "id": "step1_1",
+          "opacity": 1.0,
+          "type": "span",
+          "line": 3,
+          "token": null,
+          "nth": 0,
+          "chars": null,
+          "fill": {
+            "op": "tween",
+            "keys": [
+              [
+                6.1,
+                "#e8e8ee"
+              ],
+              [
+                6.3999999999999995,
+                "#e0a54a"
+              ],
+              [
+                8.6,
+                "#e0a54a"
+              ],
+              [
+                8.9,
+                "#e8e8ee"
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "background": {
+            "op": "tween",
+            "keys": [
+              [
+                6.1,
+                "transparent"
+              ],
+              [
+                6.3999999999999995,
+                "#2b2b3d"
+              ],
+              [
+                8.6,
+                "#2b2b3d"
+              ],
+              [
+                8.9,
+                "transparent"
+              ]
+            ],
+            "ease": "out_quad"
+          }
+        },
+        {
+          "id": "step2_0",
+          "opacity": 1.0,
+          "type": "span",
+          "line": 4,
+          "token": null,
+          "nth": 0,
+          "chars": [
+            11,
+            21
+          ],
+          "fill": {
+            "op": "tween",
+            "keys": [
+              [
+                8.9,
+                "#e8e8ee"
+              ],
+              [
+                9.200000000000001,
+                "#e0a54a"
+              ],
+              [
+                11.399999999999999,
+                "#e0a54a"
+              ],
+              [
+                11.7,
+                "#e8e8ee"
+              ]
+            ],
+            "ease": "out_quad"
+          },
+          "background": {
+            "op": "tween",
+            "keys": [
+              [
+                8.9,
+                "transparent"
+              ],
+              [
+                9.200000000000001,
+                "#2b2b3d"
+              ],
+              [
+                11.399999999999999,
+                "#2b2b3d"
+              ],
+              [
+                11.7,
+                "transparent"
+              ]
+            ],
+            "ease": "out_quad"
+          }
+        }
+      ]
+    },
+    {
+      "id": "cap0",
+      "opacity": {
+        "op": "tween",
+        "keys": [
+          [
+            3.3000000000000003,
+            0.0
+          ],
+          [
+            3.6,
+            1.0
+          ],
+          [
+            5.8,
+            1.0
+          ],
+          [
+            6.1,
+            0.0
+          ]
+        ],
+        "ease": "out_quad"
+      },
+      "type": "text",
+      "content": "x is the value; lo and hi are the bounds",
+      "x": 0.0,
+      "y": -1.5,
+      "size": 0.3,
+      "fill": "#8a8a94",
+      "font": null,
+      "align": "center",
+      "max_width": null,
+      "line_height": 1.25
+    },
+    {
+      "id": "cap1",
+      "opacity": {
+        "op": "tween",
+        "keys": [
+          [
+            6.1,
+            0.0
+          ],
+          [
+            6.3999999999999995,
+            1.0
+          ],
+          [
+            8.6,
+            1.0
+          ],
+          [
+            8.9,
+            0.0
+          ]
+        ],
+        "ease": "out_quad"
+      },
+      "type": "text",
+      "content": "below lo? hand back lo",
+      "x": 0.0,
+      "y": -1.5,
+      "size": 0.3,
+      "fill": "#8a8a94",
+      "font": null,
+      "align": "center",
+      "max_width": null,
+      "line_height": 1.25
+    },
+    {
+      "id": "cap2",
+      "opacity": {
+        "op": "tween",
+        "keys": [
+          [
+            8.9,
+            0.0
+          ],
+          [
+            9.200000000000001,
+            1.0
+          ],
+          [
+            11.399999999999999,
+            1.0
+          ],
+          [
+            11.7,
+            0.0
+          ]
+        ],
+        "ease": "out_quad"
+      },
+      "type": "text",
+      "content": "otherwise min(x, hi) caps it at hi",
+      "x": 0.0,
+      "y": -1.5,
+      "size": 0.3,
+      "fill": "#8a8a94",
+      "font": null,
+      "align": "center",
+      "max_width": null,
+      "line_height": 1.25
+    }
+  ]
+}

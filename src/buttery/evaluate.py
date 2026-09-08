@@ -9,7 +9,7 @@ from .color import lerp_color, parse_color, to_hex
 from .easing import EASINGS
 from .errors import EvalError, SceneError, SceneValidationError
 from .expr import Op, Ref, Tween, deps
-from .objects import Group, SceneObject, walk
+from .objects import Code, Group, SceneObject, walk
 from .ops import OP_FUNCS
 
 if TYPE_CHECKING:
@@ -129,6 +129,12 @@ class CompiledScene:
             out[prop] = getattr(obj, prop)
         if isinstance(obj, Group):
             out["children"] = [self._resolve(c, env) for c in obj.children]
+        elif isinstance(obj, Code):
+            out["spans"] = []
+            for span in obj.spans:
+                resolved = self._resolve(span, env)
+                resolved["start"], resolved["end"] = obj.span_range(span)  # what the selector picked
+                out["spans"].append(resolved)
         return out
 
 

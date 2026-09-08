@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Any, Callable
 import numpy as np
 import skia
 
+from .code import line_ranges
 from .color import parse_color
 from .errors import RenderError
 
@@ -54,7 +55,7 @@ class Rasterizer:
         self.surface = skia.Surface.MakeRaster(info)
         self.canvas = self.surface.getCanvas()
         self.bg = _skcolor(parse_color(self.scene.background))
-        self._typefaces: dict[str | None, skia.Typeface] = {}
+        self._typefaces: dict[tuple[str | None, bool], skia.Typeface] = {}
 
     # ------------------------------------------------------------------ public
 
@@ -113,6 +114,8 @@ class Rasterizer:
                 c.drawLine(o["x1"], o["y1"], o["x2"], o["y2"], p)
         elif kind == "text":
             self._draw_text(o, a)
+        elif kind == "code":
+            self._draw_code(o, a)
         elif kind == "group":
             c.save()
             c.translate(o["x"], o["y"])
@@ -141,11 +144,7 @@ class Rasterizer:
             return
         c = self.canvas
         size_px = o["size"] * self.px
-        font = skia.Font(self._typeface(o["font"]), size_px)
-        font.setSubpixel(True)
-        font.setEdging(skia.Font.Edging.kSubpixelAntiAlias)
-        metrics = font.getMetrics()
-        cap = metrics.fCapHeight if metrics.fCapHeight > 0 else -(metrics.fAscent + metrics.fDescent)
+        font, cap = self._font(o["font"], size_px)
         max_px = o["max_width"] * self.px if o["max_width"] is not None else None
         lines = wrap_lines(content, lambda s: font.measureText(s), max_px)
         step = o["line_height"] * size_px
@@ -162,6 +161,58 @@ class Rasterizer:
             c.drawString(line, dx, y0 + i * step, font, paint)
         c.restore()
 
+    def _draw_code(self, o: dict[str, Any], a: float) -> None:
+        """Monospace block on a fixed grid, top-left at (x, y): column pitch `char_width * size`, row pitch
+        `line_height * size`. Every character is drawn on its own at its grid cell, which is exactly right for a
+        monospace font (no kerning) and keeps the layout identical whatever font is actually found. A character's
+        fill comes from the last span covering it (else the block); its alpha is the block's times every covering
+        span's opacity, the same rule a group applies to its children.
+        """
+        content = o["content"]
+        if not content or o["size"] <= 0:
+            return
+        n = len(content)
+        fills: list[str | None] = [o["fill"]] * n
+        alphas = [a] * n
+        for span in o["spans"]:
+            sa = _clamp01(span["opacity"])
+            for i in range(span["start"], span["end"]):
+                if span["fill"] is not None:
+                    fills[i] = span["fill"]
+                alphas[i] *= sa
+
+        c = self.canvas
+        size_px = o["size"] * self.px
+        font, cap = self._font(o["font"], size_px, mono=True)
+        pitch = o["char_width"] * size_px
+        step = o["line_height"] * size_px
+        rows = line_ranges(content)  # (start, end) offsets of each row
+        c.save()
+        c.translate(o["x"], o["y"])
+        c.scale(1.0 / self.px, -1.0 / self.px)  # pixel space, y down: row r spans [r*step, (r+1)*step]
+        # backgrounds first, one rect per row a span touches, so glyphs draw on top
+        for span in o["spans"]:
+            if span["background"] is None or span["opacity"] <= 0:
+                continue
+            paint = self._paint(span["background"], a * _clamp01(span["opacity"]))
+            for r, (lo, hi) in enumerate(rows):
+                a0, b0 = max(span["start"], lo), min(span["end"], hi)
+                if a0 < b0:
+                    c.drawRect(skia.Rect.MakeXYWH((a0 - lo) * pitch, r * step, (b0 - a0) * pitch, step), paint)
+        paints: dict[tuple[str, float], skia.Paint] = {}
+        for r, (lo, hi) in enumerate(rows):
+            baseline = r * step + step / 2.0 + cap / 2.0  # cap height centered in the row band
+            for i in range(lo, hi):
+                ch = content[i]
+                if ch == " " or fills[i] is None or alphas[i] <= 0.0:
+                    continue
+                key = (fills[i], alphas[i])  # type: ignore[assignment]
+                paint = paints.get(key)
+                if paint is None:
+                    paint = paints[key] = self._paint(fills[i], alphas[i])  # type: ignore[arg-type]
+                c.drawString(ch, (i - lo) * pitch, baseline, font, paint)
+        c.restore()
+
     def _paint(self, color: str, alpha: float, stroke_width: float | None = None) -> skia.Paint:
         r, g, b, ca = parse_color(color)
         p = skia.Paint(AntiAlias=True)
@@ -173,10 +224,20 @@ class Rasterizer:
             p.setStrokeJoin(skia.Paint.kRound_Join)
         return p
 
-    def _typeface(self, name: str | None) -> skia.Typeface:
-        if name not in self._typefaces:
-            self._typefaces[name] = _match_typeface(name)
-        return self._typefaces[name]
+    def _font(self, name: str | None, size_px: float, mono: bool = False) -> tuple[skia.Font, float]:
+        """A skia font plus its cap height in pixels (used to center glyphs vertically)."""
+        font = skia.Font(self._typeface(name, mono), size_px)
+        font.setSubpixel(True)
+        font.setEdging(skia.Font.Edging.kSubpixelAntiAlias)
+        metrics = font.getMetrics()
+        cap = metrics.fCapHeight if metrics.fCapHeight > 0 else -(metrics.fAscent + metrics.fDescent)
+        return font, cap
+
+    def _typeface(self, name: str | None, mono: bool = False) -> skia.Typeface:
+        key = (name, mono)
+        if key not in self._typefaces:
+            self._typefaces[key] = _match_typeface(name, MONO_FONTS if mono else DEFAULT_FONTS)
+        return self._typefaces[key]
 
 
 # ---------------------------------------------------------------------- helpers
@@ -204,15 +265,16 @@ def wrap_lines(content: str, measure: Callable[[str], float], max_width: float |
 
 
 DEFAULT_FONTS = ("Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans", "Liberation Sans")
+MONO_FONTS = ("Menlo", "SF Mono", "Consolas", "DejaVu Sans Mono", "Liberation Mono", "Courier New")
 _font_mgr: skia.FontMgr | None = None
 
 
-def _match_typeface(name: str | None) -> skia.Typeface:
-    """Resolve a family name; fall back through DEFAULT_FONTS, then whatever the system offers."""
+def _match_typeface(name: str | None, fallbacks: tuple[str, ...] = DEFAULT_FONTS) -> skia.Typeface:
+    """Resolve a family name; fall back through `fallbacks`, then whatever the system offers."""
     global _font_mgr
     if _font_mgr is None:
         _font_mgr = skia.FontMgr()
-    for candidate in ((name,) if name else ()) + DEFAULT_FONTS:
+    for candidate in ((name,) if name else ()) + fallbacks:
         tf = _font_mgr.matchFamilyStyle(candidate, skia.FontStyle())
         if tf is not None:
             return tf

@@ -12,7 +12,7 @@ from pydantic_core import PydanticCustomError
 from .color import Color
 from .errors import SceneError, SceneValidationError, errors_from_validation
 from .expr import Op, Ref, Tween, iter_nodes
-from .objects import AnyObject, Group, SceneObject, walk
+from .objects import AnyObject, Code, Group, SceneObject, walk
 
 if TYPE_CHECKING:
     from .evaluate import CompiledScene
@@ -99,7 +99,7 @@ class Scene(BaseModel):
         return self
 
     def check(self) -> list[SceneError]:
-        """Semantic validation: unique ids, references resolve, no cycles, tween kinds match."""
+        """Semantic validation: unique ids, span selectors resolve, references resolve, no cycles, tween kinds match."""
         errors: list[SceneError] = []
         by_id: dict[str, SceneObject] = {}
         paths: dict[str, str] = {}
@@ -110,6 +110,14 @@ class Scene(BaseModel):
             else:
                 by_id[obj.id] = obj
                 paths[obj.id] = path
+
+        for obj, path in walk(self.objects):
+            if isinstance(obj, Code):
+                for j, span in enumerate(obj.spans):
+                    try:
+                        obj.span_range(span)
+                    except ValueError as exc:
+                        errors.append(SceneError(path=f"{path}.spans[{j}]", message=str(exc), object=span.id))
 
         edges: dict[str, set[str]] = {}
         for obj, path in walk(self.objects):

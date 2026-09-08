@@ -32,3 +32,10 @@ Order of work, bottom up. Each step was smoke-tested before the next.
 10. **Examples, skill, README.** `examples/bounce.py`, `examples/launch_demo.json`, `skill/SKILL.md` and `reference.md`, this file.
 
 - **Renamed to `buttery`** (2026-09-07). Package dir, pyproject name/script, imports, CLI, skill, README, examples, tests. The `animator` references above are historical.
+
+- **Code blocks** (2026-09-08). `code` primitive plus `span` children (`objects.py`), selection logic in
+  `code.py`. Decisions: glyphs sit on a fixed grid (0.6 x size per column) rather than measured advances, so
+  a selection is a run of cells and geometry is known without a renderer; every selector (line, Python
+  token, character range) resolves to one canonical `[start, end)` range, which is all the evaluator and
+  renderer see; span opacity multiplies like a group's so a per-line reveal and a later highlight compose.
+  Syntax highlighting is a later step on top of `code.python_tokens` (each token already carries a kind).

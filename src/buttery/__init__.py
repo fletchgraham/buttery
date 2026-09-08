@@ -15,13 +15,13 @@
 
 from .errors import EvalError, RenderError, SceneError, SceneValidationError
 from .expr import Op, Ref, T, Tween, clamp, cos, keyframes, max_, min_, noise, ref, sin, smoothstep, tween
-from .objects import Circle, Group, Line, Rect, SceneObject, Text
+from .objects import Circle, Code, Group, Line, Rect, SceneObject, Span, Text
 from .scene import Scene
 
 __version__ = "0.1.0"
 
 __all__ = [
-    "Circle", "EvalError", "Group", "Line", "Op", "Rect", "Ref", "RenderError", "Scene", "SceneError",
-    "SceneObject", "SceneValidationError", "T", "Text", "Tween", "clamp", "cos", "keyframes", "max_", "min_",
+    "Circle", "Code", "EvalError", "Group", "Line", "Op", "Rect", "Ref", "RenderError", "Scene", "SceneError",
+    "SceneObject", "SceneValidationError", "Span", "T", "Text", "Tween", "clamp", "cos", "keyframes", "max_", "min_",
     "noise", "ref", "sin", "smoothstep", "tween",
 ]

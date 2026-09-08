@@ -48,7 +48,7 @@ class RenderError(RuntimeError):
     """Raised when rasterization or encoding fails."""
 
 
-_TAGS = {"circle", "rect", "line", "text", "group", "num", "ref", "op", "tween", "color"}
+_TAGS = {"circle", "rect", "line", "text", "code", "span", "group", "num", "ref", "op", "tween", "color"}
 
 
 def _clean_loc(loc: tuple[Any, ...], raw: Any) -> tuple[tuple[Any, ...], str | None, str | None]:
@@ -65,7 +65,7 @@ def _clean_loc(loc: tuple[Any, ...], raw: Any) -> tuple[tuple[Any, ...], str | N
             if isinstance(node.get("id"), str):
                 obj_id, prop = node["id"], None
             if part in node:
-                if obj_id is not None and prop is None and part != "children":
+                if obj_id is not None and prop is None and part not in ("children", "spans"):
                     prop = str(part)
                 node = node[part]
             elif part in _TAGS:

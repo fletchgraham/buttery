@@ -53,6 +53,37 @@ scene.save("scene.json"); scene.render("out.mp4")
 
 Read `obj.prop` to get the stored expression; use `obj.ref.prop` to reference it from another object.
 
+## Code
+
+A `code` object is a monospace block anchored at its top-left `(x, y)`; `size` is the font size. Characters sit
+on a fixed grid, column `c` of row `r` at `(x + c*char_width*size, y - r*line_height*size)` (defaults 0.6 and
+1.4), so layout never depends on the font. Use spaces, not tabs. In Python, `code.width` and `code.height` are
+known without rendering: `code.x = -code.width / 2` centers the block.
+
+Parts of the snippet are selected with `spans`, each with an `id` and animatable `fill`, `background`, `opacity`:
+
+```json
+{"id": "fn", "type": "code", "size": 0.34, "content": "def f(x):\n    return x + 1",
+ "spans": [
+   {"id": "kw",   "token": "return", "fill": "coral"},
+   {"id": "arg",  "token": "x", "nth": -1, "background": "#2b2b3d"},
+   {"id": "l1",   "line": 1, "opacity": {"op": "tween", "keys": [[0.5, 0], [1, 1]]}},
+   {"id": "call", "line": 2, "chars": [11, 16], "fill": "#e0a54a"}
+ ]}
+```
+
+- `line: n` (1-based) selects a whole line. `token: "x"` selects the nth Python token with exactly that text
+  (`nth` from 0, negative from the end); add `line` to search only that line. `chars: [a, b]` is a half-open
+  range of offsets into the snippet, or of columns when `line` is given. Only `token` needs valid Python.
+- `buttery state` shows each span's resolved `start`/`end`, so you can check what a selector picked.
+- Span `opacity` multiplies the block's (like a group), `fill` replaces it, `background` paints the cells.
+  Later spans win where fills overlap.
+- **Reveal line by line**: one span per line with `opacity` tweening 0 -> 1 on its beat.
+- **Highlight, then let go**: tween `background` from `"transparent"` to a color and back; tween `fill` from
+  the block's color to an accent and back. The first key holds before its time, so the span is invisible until then.
+- Python: `code.select("kw", token="return", fill="coral")` builds and appends the span, and fails at once if
+  the selector does not resolve. See `examples/code_walk.py`.
+
 ## Algorithm walkthroughs (staged, data-driven scenes)
 
 Simulate the algorithm in plain Python first and record a list of steps (what moves, from where, to where,

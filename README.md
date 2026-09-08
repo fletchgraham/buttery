@@ -14,6 +14,11 @@ Pydantic models *are* the schema. JSON is the product contract; the Python API i
 *`examples/rb_rotation.py`: nodes are groups, edges are lines whose endpoints reference the nodes, so the
 edges follow the rotation for free. The before/after trees are two tuples; the script diffs them.*
 
+![Walking through a function, one line at a time](https://raw.githubusercontent.com/fletchgraham/buttery/main/examples/code_walk.gif)
+
+*`examples/code_walk.py`: a `code` block reveals a line per beat, then spans select by Python token, by line,
+and by character range to highlight what each caption talks about.*
+
 ```
 Agent tool surface   validate / state / preview / render     (tools.py, cli.py, mcp_server.py)
 Authoring            Python sugar  <->  JSON                 (objects.py, expr.py, parse.py)
@@ -78,7 +83,9 @@ Shorthand strings like `"dot.r + 0.5"` parse (no `eval`) into the same op tree. 
 prints the JSON schema from `Scene.model_json_schema()`.
 
 **Coordinates**: world units, origin at center, y up. The frame is `view_width` (default 8) units wide.
-**Primitives**: `circle rect line text group`. `text` wraps at `max_width` and honors newlines. **Ops**: `add sub mul div neg sin cos abs min max clamp smoothstep noise`.
+**Primitives**: `circle rect line text code group`. `text` wraps at `max_width` and honors newlines. `code` is a
+monospace block on a fixed character grid; its `spans` select characters by `line`, by Python `token`, or by
+`chars` range and give them their own `fill`, `background` and `opacity`. **Ops**: `add sub mul div neg sin cos abs min max clamp smoothstep noise`.
 **Eases**: `linear in_quad out_quad in_out_quad out_cubic in_out_cubic spring`. Colors: hex or CSS names;
 `fill`/`stroke` can be tweened between colors.
 
@@ -114,14 +121,15 @@ Or from the published packages, no checkout needed: `claude mcp add buttery -- n
 src/buttery/
   expr.py        AST models (Op, Tween, Ref), operator overloading, sugar (T, sin, tween, keyframes, ...)
   parse.py       shorthand parser -> AST, constant folding
-  objects.py     Circle, Rect, Line, Text, Group
+  objects.py     Circle, Rect, Line, Text, Code (+ Span), Group
+  code.py        Python tokenizer and line / token / chars selection -> character ranges
   scene.py       Scene, semantic checks, state(t)
   evaluate.py    compile + topological evaluation
   render.py      skia rasterizer, motion blur, parallel render, ffmpeg
   tools.py       validate / state / preview / render (JSON in, JSON out)
   cli.py         `buttery` command
   mcp_server.py  MCP server
-examples/        bounce.py, squash_bounce.py, merge_sorted.py, rb_rotation.py (Python) and their .json, launch_demo.json
+examples/        bounce.py, squash_bounce.py, merge_sorted.py, rb_rotation.py, code_walk.py (Python) and their .json, launch_demo.json
 skill/           Claude Code skill
 tests/
 ```
