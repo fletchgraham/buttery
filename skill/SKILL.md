@@ -54,6 +54,8 @@ Object types and properties (every object needs a unique `id`; `opacity` on all)
 | rect   | x y w h corner_radius rotation fill stroke stroke_width (x,y is the center) |
 | line   | x1 y1 x2 y2 stroke stroke_width |
 | text   | content font align max_width line_height (static) · x y size fill · newlines in content start new lines; max_width wraps at words |
+| code   | content font char_width line_height theme spans[] (static) · x y size fill · monospace block, top-left at (x,y), fixed grid; `theme: "default"` highlights Python; use spaces not tabs |
+| span   | only inside `code.spans`: line, token (+nth), chars (selectors, static) · fill background opacity · selects by line / Python token / char range; ids are global |
 | group  | x y rotation scale children[] (children ids are global) |
 
 Any numeric property accepts: a number · `"t"` · `"<id>.<prop>"` · shorthand `"0.2*sin(6*t)"` ·
@@ -63,4 +65,5 @@ Ops: `add sub mul div neg sin cos abs min max clamp smoothstep noise`. Shorthand
 Tween: `{"op": "tween", "keys": [[t, v], ...], "ease": "..."}`; holds first/last value outside its keys.
 Eases: `linear in_quad out_quad in_out_quad out_cubic in_out_cubic spring`.
 
-See `reference.md` for recipes (fade in, staggered entrances, orbit, bounce, follow) and taste notes.
+See `reference.md` for recipes (fade in, staggered entrances, orbit, bounce, follow), the code-block section
+(selectors, reveal line by line, highlight then let go), and taste notes.

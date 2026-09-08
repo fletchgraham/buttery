@@ -24,6 +24,9 @@ Objects (each needs a unique "id" and a "type"):
   rect:   x y w h corner_radius rotation fill stroke stroke_width opacity   (x,y = center; rotation in degrees CCW)
   line:   x1 y1 x2 y2 stroke stroke_width opacity
   text:   content(static) font(static) align(static: left|center|right) x y size fill opacity
+  code:   content font char_width line_height theme spans[] (static) x y size fill opacity
+          monospace block, top-left at (x,y), fixed grid (0.6*size per column); theme "default" highlights Python
+  span:   only inside code.spans; selectors line / token (+nth) / chars (static), then fill background opacity
   group:  x y rotation scale opacity children[]
 
 Any numeric property can be: a number, "t", "<id>.<prop>", a shorthand string like "0.2*sin(6*t)",
