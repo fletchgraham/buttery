@@ -1,7 +1,7 @@
 ---
 name: buttery
 description: Author and render 2D explainer animations as JSON scenes where every property is a pure function of time. Use when asked to make an explainer animation, animate shapes and labels, produce an mp4 of eased motion, or work with buttery scene JSON. Provides validate / state / preview / render.
-allowed-tools: Bash(uv run buttery:*), Read
+allowed-tools: Bash(buttery:*), Bash(uv run:*), Bash(uvx buttery:*), Bash(python3:*), Bash(python:*), Bash(ls:*), Bash(cat:*), Bash(for:*), Read, Write, Edit
 ---
 
 # buttery
@@ -9,15 +9,19 @@ allowed-tools: Bash(uv run buttery:*), Read
 A scene is JSON. `state(t)` resolves every property at time `t`; nothing accumulates between frames.
 You author the JSON, validate it, look at a few previews, then render.
 
-All commands run from the project directory (`${CLAUDE_SKILL_DIR}/..`):
+Run commands from your working directory, where `scene.json` lives. Do not `cd` anywhere.
 
 ```bash
-uv run buttery validate scene.json                 # ok, or structured errors
-uv run buttery state scene.json --t 1.25           # resolved values at t
-uv run buttery preview scene.json --t 1.25 --out preview.png --scale 0.25
-uv run buttery render scene.json out.mp4           # motion blur on; or a directory for PNGs
-uv run buttery schema                              # full JSON schema
+buttery validate scene.json                 # ok, or structured errors
+buttery state scene.json --t 1.25           # resolved values at t
+buttery preview scene.json --t 1.25 --out preview.png --scale 0.25
+buttery render scene.json out.mp4           # motion blur on; or a directory for PNGs
+buttery schema                              # full JSON schema
 ```
+
+If `buttery` is not on your PATH, use `uvx buttery ...` (no install needed), or when this skill sits inside
+a checkout of the repo, `uv run --project ${CLAUDE_SKILL_DIR}/.. buttery ...`. Both keep your working directory.
+Scripting the JSON with `python3` is fine; the CLI is the source of truth for validation.
 
 Errors name the `path`, `object` id, `property`, and `t` where relevant. Fix and re-validate.
 
