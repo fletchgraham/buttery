@@ -1,6 +1,6 @@
 [project]
 name = "buttery"
-version = "0.3.1"
+version = "0.3.2"
 description = "Agent-friendly 2D explainer animations. The scene is a pure function of time."
 readme = "README.md"
 license = "MIT"
@@ -26,7 +26,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/fletchgraham/buttery"
+Homepage = "https://buttery.computer"
+Documentation = "https://buttery.computer"
 Repository = "https://github.com/fletchgraham/buttery"
 Issues = "https://github.com/fletchgraham/buttery/issues"
 
