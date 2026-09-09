@@ -43,6 +43,6 @@ Order of work, bottom up. Each step was smoke-tested before the next.
   (`code.THEMES`, `theme_colors`). Applied in the renderer as one more fill layer between the block's `fill` and
   its spans, so nothing else changed: no new objects, no JSON growth, spans still win. Validation checks the
   theme name structurally and that the snippet tokenizes semantically (`objects[i].theme`).
-- **Syntax theme example** (2026-09-09). `examples/syntax_theme.py`: no theme, `default`, and a custom mapping
-  that colors all six kinds, as three stacked blocks crossfading `opacity` (a theme is not animatable), with a
-  legend that reads each kind's color off the same `THEMES` / mapping the block uses.
+- **Syntax theme example** (2026-09-09). `examples/syntax_theme.py`: one block with a custom theme that colors
+  all six kinds, a legend that reads each kind's color off the same mapping, and a per-kind beat that pulses
+  every token of that kind (one `chars` span per token from `python_tokens`).

@@ -21,8 +21,8 @@ token, by line, and by character range to highlight what each caption talks abou
 
 ![Every color of the syntax highlighter, side by side](https://raw.githubusercontent.com/fletchgraham/buttery/main/examples/syntax_theme.gif)
 
-*`examples/syntax_theme.py`: no theme, the built-in `default`, and a custom mapping that colors all six token
-kinds. `theme` is static per block, so the three views are three stacked blocks crossfading their opacity.*
+*`examples/syntax_theme.py`: a custom `theme` colors all six token kinds; the legend walks them one per beat and
+every token of that kind pulses in the code.*
 
 ```
 Agent tool surface   validate / state / preview / render     (tools.py, cli.py, mcp_server.py)
