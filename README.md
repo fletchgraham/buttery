@@ -1,28 +1,64 @@
-# buttery
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fletchgraham/buttery/main/docs/logo.png" alt="" width="260">
+</p>
 
-Agent-friendly 2D explainer animations. **The scene is a pure function of time**: `state(t)` resolves every
-property at `t`, nothing accumulates between frames, every frame renders independently and in parallel.
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/fletchgraham/buttery/main/docs/wordmark-dark.png">
+    <img src="https://raw.githubusercontent.com/fletchgraham/buttery/main/docs/wordmark.png" alt="buttery" width="220">
+  </picture>
+</h1>
 
-Pydantic models *are* the schema. JSON is the product contract; the Python API is sugar over the same models.
+<p align="center">Buttery smooth, agent-friendly explainer animations in Python.</p>
+
+```
+❯ Use buttery to make an animated explainer of merging two sorted lists.
+```
 
 ![Merging two sorted lists, one comparison per beat](https://raw.githubusercontent.com/fletchgraham/buttery/main/examples/merge_sorted.gif)
 
 *`examples/merge_sorted.py`: the merge is simulated in Python, then each step becomes keyframes.*
+
+## Key features
+
+- **The scene is a pure function of time.** `state(t)` resolves every property at `t`. Nothing accumulates
+  between frames, so every frame renders independently and in parallel, and a scrub to any `t` is exact.
+- **Pydantic models are the schema.** JSON is the product contract; the Python API is sugar over the same
+  models. `buttery schema` prints the JSON schema an agent can build against.
+- **Properties are expressions, not values.** Tweens, keyframes, `sin(6 * T)`, and references to other
+  objects' properties (`ring.x = dot.ref.x`) form a dependency DAG, so edges follow nodes for free.
+  Shorthand strings like `"dot.r + 0.5"` parse into the same tree, no `eval`.
+- **Built for agents.** `validate` / `state` / `preview` / `render` as a CLI, a Python API, and an MCP server.
+  Every call returns `{"ok": true, ...}` or a structured error list, never a bare stack trace. A Claude Code
+  skill is included.
+- **Explainer primitives.** `circle rect line text group`, and a `code` block that syntax-highlights Python and
+  lets spans select by token, line, or character range.
+- **Validation up front.** Structural checks from pydantic (unknown fields, arity, colors) plus semantic checks:
+  unique ids, references resolve, no dependency cycles.
+- **Real motion blur.** A skia-python renderer samples sub-frames across a configurable shutter, uses every
+  core, and writes an `.mp4` through ffmpeg or a PNG sequence without it.
+
+## More examples
+
+```
+❯ Use buttery to show a red-black tree left rotation one step at a time.
+```
 
 ![Red-black tree left rotation, one step at a time](https://raw.githubusercontent.com/fletchgraham/buttery/main/examples/rb_rotation.gif)
 
 *`examples/rb_rotation.py`: nodes are groups, edges are lines whose endpoints reference the nodes, so the
 edges follow the rotation for free. The before/after trees are two tuples; the script diffs them.*
 
-![Walking through a function, one line at a time](https://raw.githubusercontent.com/fletchgraham/buttery/main/examples/code_walk.gif)
-
-*`examples/code_walk.py`: a syntax-highlighted `code` block reveals a line per beat, then spans select by Python
-token, by line, and by character range to highlight what each caption talks about.*
+```
+❯ Use buttery to show every token color of the syntax highlighter, one kind per beat.
+```
 
 ![Every color of the syntax highlighter, side by side](https://raw.githubusercontent.com/fletchgraham/buttery/main/examples/syntax_theme.gif)
 
 *`examples/syntax_theme.py`: a custom `theme` colors all six token kinds; the legend walks them one per beat and
 every token of that kind pulses in the code.*
+
+## Architecture
 
 ```
 Agent tool surface   validate / state / preview / render     (tools.py, cli.py, mcp_server.py)
