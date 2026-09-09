@@ -19,6 +19,11 @@ edges follow the rotation for free. The before/after trees are two tuples; the s
 *`examples/code_walk.py`: a syntax-highlighted `code` block reveals a line per beat, then spans select by Python
 token, by line, and by character range to highlight what each caption talks about.*
 
+![Every color of the syntax highlighter, side by side](https://raw.githubusercontent.com/fletchgraham/buttery/main/examples/syntax_theme.gif)
+
+*`examples/syntax_theme.py`: no theme, the built-in `default`, and a custom mapping that colors all six token
+kinds. `theme` is static per block, so the three views are three stacked blocks crossfading their opacity.*
+
 ```
 Agent tool surface   validate / state / preview / render     (tools.py, cli.py, mcp_server.py)
 Authoring            Python sugar  <->  JSON                 (objects.py, expr.py, parse.py)
@@ -130,7 +135,7 @@ src/buttery/
   tools.py       validate / state / preview / render (JSON in, JSON out)
   cli.py         `buttery` command
   mcp_server.py  MCP server
-examples/        bounce.py, squash_bounce.py, merge_sorted.py, rb_rotation.py, code_walk.py (Python) and their .json, launch_demo.json
+examples/        bounce.py, squash_bounce.py, merge_sorted.py, rb_rotation.py, code_walk.py, syntax_theme.py (Python) and their .json, launch_demo.json
 skill/           Claude Code skill
 tests/
 ```
