@@ -1,0 +1,33 @@
+/* Hero on the home page */
+.buttery-hero {
+  text-align: center;
+  margin: 1rem 0 2rem;
+}
+.buttery-hero img.logo {
+  width: 200px;
+  max-width: 60%;
+}
+.md-typeset .buttery-hero h1.wordmark {
+  margin: 0.5rem 0 0;
+  line-height: 0;
+}
+.buttery-hero h1.wordmark img {
+  width: 180px;
+  max-width: 50%;
+}
+.buttery-hero h1.wordmark .headerlink { display: none; }
+.buttery-hero .tagline {
+  font-size: 1.15rem;
+  opacity: 0.85;
+  margin-top: 0.75rem;
+}
+.buttery-hero img.wordmark-dark { display: none; }
+[data-md-color-scheme="slate"] .buttery-hero img.wordmark-light { display: none; }
+[data-md-color-scheme="slate"] .buttery-hero img.wordmark-dark { display: inline; }
+
+/* Example gifs: full width, rounded */
+.md-typeset img.example {
+  display: block;
+  width: 100%;
+  border-radius: 0.4rem;
+}

@@ -1,0 +1,16 @@
+// Cloudflare Workers config for the docs site (static assets only, no script).
+// Deploy: `npx wrangler deploy` after `zensical build --clean`.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "buttery-docs",
+  "compatibility_date": "2026-09-09",
+  "assets": {
+    "directory": "./site",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "routes": [
+    { "pattern": "buttery.computer", "custom_domain": true },
+    { "pattern": "www.buttery.computer", "custom_domain": true }
+  ]
+}

@@ -11,6 +11,8 @@
 
 <p align="center">Buttery smooth, agent-friendly explainer animations in Python.</p>
 
+<p align="center"><a href="https://buttery.computer">buttery.computer</a></p>
+
 ```
 ❯ Use buttery to make an animated explainer of merging two sorted lists.
 ```

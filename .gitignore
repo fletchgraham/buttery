@@ -10,3 +10,6 @@ out/
 .pytest_cache/
 .env
 .env.*
+site/
+.wrangler/
+node_modules/

@@ -35,6 +35,7 @@ buttery = "buttery.cli:main"
 
 [dependency-groups]
 dev = ["pytest>=8"]
+docs = ["zensical>=0.0.60"]
 
 [build-system]
 requires = ["hatchling"]
